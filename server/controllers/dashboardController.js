@@ -1,7 +1,5 @@
-const Lead = require('../models/Lead');
+import Lead from '../models/Lead.js';
 
-const getStats = async (req, res) => {
+export const getStats = async (req, res) => {
   // Logic to get dashboard stats
 };
-
-module.exports = { getStats };

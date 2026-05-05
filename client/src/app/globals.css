@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+:root {
+  --background: #1a1a2e;
+  --foreground: #ffffff;
+}
+
+body {
+  @apply bg-[#1a1a2e] text-white font-sans min-h-screen;
+}

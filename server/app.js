@@ -1,11 +1,11 @@
-const express = require('express');
-const cors = require('cors');
-const morgan = require('morgan');
-const { notFound, errorHandler } = require('./middleware/errorMiddleware');
-const authRoutes = require('./routes/authRoutes');
-const leadRoutes = require('./routes/leadRoutes');
-const noteRoutes = require('./routes/noteRoutes');
-const dashboardRoutes = require('./routes/dashboardRoutes');
+import express from 'express';
+import cors from 'cors';
+import morgan from 'morgan';
+import { notFound, errorHandler } from './middleware/errorMiddleware.js';
+import authRoutes from './routes/authRoutes.js';
+import leadRoutes from './routes/leadRoutes.js';
+import noteRoutes from './routes/noteRoutes.js';
+import dashboardRoutes from './routes/dashboardRoutes.js';
 
 const app = express();
 
@@ -27,4 +27,4 @@ app.get('/', (req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
-module.exports = app;
+export default app;

@@ -1,13 +1,13 @@
-const express = require('express');
-const {
+import express from 'express';
+import {
   getNotesByLead,
   createNote,
   deleteNote,
-} = require('../controllers/noteController');
-const { protect } = require('../middleware/authMiddleware');
+} from '../controllers/noteController.js';
+import { protect } from '../middleware/authMiddleware.js';
 const router = express.Router();
 
 router.route('/:leadId').get(protect, getNotesByLead).post(protect, createNote);
 router.route('/note/:id').delete(protect, deleteNote);
 
-module.exports = router;
+export default router;
