@@ -3,8 +3,8 @@ import api from './axios';
 /**
  * Get all leads
  */
-export const getLeads = async () => {
-  const response = await api.get('/leads');
+export const getLeads = async (params = {}) => {
+  const response = await api.get('/leads', { params });
   return response.data;
 };
 

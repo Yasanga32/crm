@@ -7,14 +7,46 @@ const LeadsPage = () => {
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  
+  // Filter states
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [sourceFilter, setSourceFilter] = useState('');
+  const [salespersonFilter, setSalespersonFilter] = useState('');
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    fetchLeads();
+    fetchUsers();
   }, []);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      fetchLeads();
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [search, statusFilter, sourceFilter, salespersonFilter]);
+
+  const fetchUsers = async () => {
+    try {
+      const { getUsers } = await import('@/api/users');
+      const data = await getUsers();
+      setUsers(data);
+    } catch (err) {
+      console.error('Failed to fetch users');
+    }
+  };
 
   const fetchLeads = async () => {
     try {
-      const data = await getLeads();
+      setLoading(true);
+      const params = {};
+      if (search) params.search = search;
+      if (statusFilter) params.status = statusFilter;
+      if (sourceFilter) params.source = sourceFilter;
+      if (salespersonFilter) params.salesperson = salespersonFilter;
+
+      const data = await getLeads(params);
       setLeads(data);
     } catch (err) {
       setError('Failed to fetch leads');
@@ -84,6 +116,95 @@ const LeadsPage = () => {
           </svg>
           New Lead
         </Link>
+      </div>
+      
+      {/* Search and Filters */}
+      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          {/* Search */}
+          <div className="lg:col-span-2 relative">
+            <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </span>
+            <input
+              type="text"
+              placeholder="Search by name, email or company..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all"
+            />
+          </div>
+
+          {/* Status Filter */}
+          <div>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg border appearance-none cursor-pointer"
+            >
+              <option value="">All Statuses</option>
+              <option value="New">New</option>
+              <option value="Contacted">Contacted</option>
+              <option value="Qualified">Qualified</option>
+              <option value="Proposal Sent">Proposal Sent</option>
+              <option value="Won">Won</option>
+              <option value="Lost">Lost</option>
+            </select>
+          </div>
+
+          {/* Source Filter */}
+          <div>
+            <select
+              value={sourceFilter}
+              onChange={(e) => setSourceFilter(e.target.value)}
+              className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg border appearance-none cursor-pointer"
+            >
+              <option value="">All Sources</option>
+              <option value="Web">Web</option>
+              <option value="Referral">Referral</option>
+              <option value="LinkedIn">LinkedIn</option>
+              <option value="Cold Call">Cold Call</option>
+              <option value="Email Campaign">Email Campaign</option>
+              <option value="Conference">Conference</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          {/* Salesperson Filter */}
+          <div>
+            <select
+              value={salespersonFilter}
+              onChange={(e) => setSalespersonFilter(e.target.value)}
+              className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg border appearance-none cursor-pointer"
+            >
+              <option value="">All Salespeople</option>
+              {users.map(user => (
+                <option key={user._id} value={user._id}>{user.name}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {(search || statusFilter || sourceFilter || salespersonFilter) && (
+          <div className="mt-4 flex justify-end">
+            <button
+              onClick={() => {
+                setSearch('');
+                setStatusFilter('');
+                setSourceFilter('');
+                setSalespersonFilter('');
+              }}
+              className="text-xs text-red-600 hover:text-red-800 font-medium flex items-center gap-1"
+            >
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              Clear All Filters
+            </button>
+          </div>
+        )}
       </div>
 
       {error && <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6 border border-red-100">{error}</div>}
