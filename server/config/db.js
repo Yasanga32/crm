@@ -6,7 +6,7 @@ export const connectDB = async () => {
 
     mongoose.connection.on("connected", () => console.log("Connected to MongoDB"))
 
-    await mongoose.connect(`${process.env.MONGODB_URL}/crm`)
+    await mongoose.connect(process.env.MONGODB_URL)
 
   } catch (error) {
     console.log("Error connecting to MongoDB", error);

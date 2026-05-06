@@ -1,7 +1,8 @@
 "use client";
 import React from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { LayoutDashboard, LogOut, User } from 'lucide-react';
+import { LayoutDashboard, LogOut, Users } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Dashboard() {
   const { userInfo, logout } = useAuth();
@@ -19,13 +20,22 @@ export default function Dashboard() {
           </div>
         </div>
         
-        <button 
-          onClick={logout}
-          className="flex items-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 px-5 py-2.5 rounded-xl transition-all font-medium border border-red-500/20"
-        >
-          <LogOut className="w-4 h-4" />
-          <span>Logout</span>
-        </button>
+        <div className="flex items-center gap-4">
+          <Link 
+            href="/dashboard/leads"
+            className="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-2.5 rounded-xl transition-all font-medium shadow-lg shadow-indigo-500/20"
+          >
+            <Users className="w-4 h-4" />
+            <span>Manage Leads</span>
+          </Link>
+          <button 
+            onClick={logout}
+            className="flex items-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 px-5 py-2.5 rounded-xl transition-all font-medium border border-red-500/20"
+          >
+            <LogOut className="w-4 h-4" />
+            <span>Logout</span>
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

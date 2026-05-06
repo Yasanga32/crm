@@ -8,7 +8,7 @@ const LeadDetailsPage = () => {
   const params = useParams();
   const router = useRouter();
   const { id } = params;
-  
+
   const [lead, setLead] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -77,13 +77,13 @@ const LeadDetailsPage = () => {
           <h1 className="text-3xl font-bold text-gray-900">Lead Details</h1>
         </div>
         <div className="flex gap-3">
-          <Link 
+          <Link
             href={`/dashboard/leads/${id}/edit`}
             className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors"
           >
             Edit
           </Link>
-          <button 
+          <button
             onClick={deleteLead}
             className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
           >
