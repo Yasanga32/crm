@@ -1,21 +1,40 @@
 import Lead from '../models/Lead.js';
 
-// @desc    Get all leads
-// @route   GET /api/leads
-// @access  Private
+
 export const getLeads = async (req, res) => {
   try {
-    // Only get leads owned by the logged-in user
-    const leads = await Lead.find({ owner: req.user._id }).populate('owner', 'name email');
+    const { status, source, salesperson } = req.query;
+
+    //Build query object
+    let query = {};
+
+    //Only get leads owned by the logged-in user by default
+    //If salesperson is provided, we use that for owner, otherwise use req.user._id
+    //This allows filtering by other salespeople if needed in the future (e.g. for admins)
+    //For now, we'll keep it simple and combine them if salesperson is provided
+    if (salesperson) {
+      query.owner = salesperson;
+    } else {
+      query.owner = req.user._id;
+    }
+
+    // Apply filters
+    if (status) {
+      query.status = status;
+    }
+
+    if (source) {
+      query.source = source;
+    }
+
+    const leads = await Lead.find(query).populate('owner', 'name email');
     res.json(leads);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// @desc    Get lead by ID
-// @route   GET /api/leads/:id
-// @access  Private
+
 export const getLeadById = async (req, res) => {
   try {
     const lead = await Lead.findById(req.params.id).populate('owner', 'name email');
@@ -34,9 +53,7 @@ export const getLeadById = async (req, res) => {
   }
 };
 
-// @desc    Create lead
-// @route   POST /api/leads
-// @access  Private
+
 export const createLead = async (req, res) => {
   const { name, email, phone, company, status, source } = req.body;
 
@@ -58,15 +75,13 @@ export const createLead = async (req, res) => {
   }
 };
 
-// @desc    Update lead
-// @route   PUT /api/leads/:id
-// @access  Private
+
 export const updateLead = async (req, res) => {
   try {
     const lead = await Lead.findById(req.params.id);
 
     if (lead) {
-      // Check if user is owner
+      //Check if user is owner
       if (lead.owner.toString() !== req.user._id.toString()) {
         return res.status(403).json({ message: 'Not authorized to update this lead' });
       }
@@ -88,15 +103,13 @@ export const updateLead = async (req, res) => {
   }
 };
 
-// @desc    Delete lead
-// @route   DELETE /api/leads/:id
-// @access  Private
+
 export const deleteLead = async (req, res) => {
   try {
     const lead = await Lead.findById(req.params.id);
 
     if (lead) {
-      // Check if user is owner
+      //Check if user is owner
       if (lead.owner.toString() !== req.user._id.toString()) {
         return res.status(403).json({ message: 'Not authorized to delete this lead' });
       }
