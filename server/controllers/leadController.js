@@ -3,28 +3,35 @@ import Lead from '../models/Lead.js';
 
 export const getLeads = async (req, res) => {
   try {
-    const { status, source, salesperson } = req.query;
+    const { status, source, salesperson, search } = req.query;
 
     //Build query object
     let query = {};
 
     //Only get leads owned by the logged-in user by default
-    //If salesperson is provided, we use that for owner, otherwise use req.user._id
-    //This allows filtering by other salespeople if needed in the future (e.g. for admins)
-    //For now, we'll keep it simple and combine them if salesperson is provided
     if (salesperson) {
       query.owner = salesperson;
     } else {
       query.owner = req.user._id;
     }
 
-    // Apply filters
+    //Apply filters
     if (status) {
       query.status = status;
     }
 
     if (source) {
       query.source = source;
+    }
+
+    //Apply search
+    if (search) {
+      const searchRegex = new RegExp(search, 'i');
+      query.$or = [
+        { name: searchRegex },
+        { email: searchRegex },
+        { company: searchRegex },
+      ];
     }
 
     const leads = await Lead.find(query).populate('owner', 'name email');
