@@ -81,7 +81,7 @@ const LeadNotes = ({ leadId }) => {
                 <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                   <div className="flex justify-between items-start mb-2">
                     <span className="text-sm font-bold text-gray-900">
-                      {note.createdBy?.name || 'Unknown User'}
+                      {note.createdBy ? `${note.createdBy.name} (${note.createdBy.email})` : 'Unknown User'}
                     </span>
                     <span className="text-xs text-gray-500">
                       {new Date(note.createdAt).toLocaleDateString()} at {new Date(note.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
