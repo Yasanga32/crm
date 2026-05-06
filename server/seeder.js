@@ -31,7 +31,7 @@ const seedAdmin = async () => {
             role: "admin",
         });
 
-        console.log("✅ Admin user created:");
+        console.log("Admin user created:");
         console.log(admin);
 
         process.exit();
