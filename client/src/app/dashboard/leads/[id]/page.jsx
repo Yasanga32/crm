@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getLeadById, deleteLead as removeLead, updateLead } from '@/api/leads';
+import LeadNotes from '@/components/LeadNotes';
 
 const LeadDetailsPage = () => {
   const params = useParams();
@@ -178,6 +179,8 @@ const LeadDetailsPage = () => {
               )}
             </div>
           </div>
+
+          <LeadNotes leadId={id} />
         </div>
       </div>
     </div>
