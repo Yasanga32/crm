@@ -1,11 +1,32 @@
 "use client";
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { LayoutDashboard, LogOut, Users } from 'lucide-react';
 import Link from 'next/link';
+import { getDashboardStats } from '@/api/dashboard';
 
 export default function Dashboard() {
   const { userInfo, logout } = useAuth();
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const data = await getDashboardStats();
+        setStats(data);
+      } catch (err) {
+        setError('Failed to load dashboard statistics');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  if (loading) return <div className="p-8 text-white">Loading stats...</div>;
+  if (error) return <div className="p-8 text-red-400">{error}</div>;
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
