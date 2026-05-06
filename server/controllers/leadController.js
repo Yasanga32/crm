@@ -5,9 +5,8 @@ import Lead from '../models/Lead.js';
 // @access  Private
 export const getLeads = async (req, res) => {
   try {
-    // If admin, get all leads, otherwise only leads owned by user
-    const query = req.user.role === 'admin' ? {} : { owner: req.user._id };
-    const leads = await Lead.find(query).populate('owner', 'name email');
+    // Only get leads owned by the logged-in user
+    const leads = await Lead.find({ owner: req.user._id }).populate('owner', 'name email');
     res.json(leads);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -22,8 +21,8 @@ export const getLeadById = async (req, res) => {
     const lead = await Lead.findById(req.params.id).populate('owner', 'name email');
 
     if (lead) {
-      // Check if user is owner or admin
-      if (lead.owner._id.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+      // Check if user is owner
+      if (lead.owner._id.toString() !== req.user._id.toString()) {
         return res.status(403).json({ message: 'Not authorized to view this lead' });
       }
       res.json(lead);
@@ -67,8 +66,8 @@ export const updateLead = async (req, res) => {
     const lead = await Lead.findById(req.params.id);
 
     if (lead) {
-      // Check if user is owner or admin
-      if (lead.owner.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+      // Check if user is owner
+      if (lead.owner.toString() !== req.user._id.toString()) {
         return res.status(403).json({ message: 'Not authorized to update this lead' });
       }
 
@@ -97,8 +96,8 @@ export const deleteLead = async (req, res) => {
     const lead = await Lead.findById(req.params.id);
 
     if (lead) {
-      // Check if user is owner or admin
-      if (lead.owner.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+      // Check if user is owner
+      if (lead.owner.toString() !== req.user._id.toString()) {
         return res.status(403).json({ message: 'Not authorized to delete this lead' });
       }
 
