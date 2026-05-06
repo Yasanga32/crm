@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { getLeadById, deleteLead as removeLead } from '@/api/leads';
+import { getLeadById, deleteLead as removeLead, updateLead } from '@/api/leads';
 
 const LeadDetailsPage = () => {
   const params = useParams();
@@ -43,12 +43,13 @@ const LeadDetailsPage = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'New': return 'bg-blue-100 text-blue-800';
-      case 'Contacted': return 'bg-yellow-100 text-yellow-800';
-      case 'Qualified': return 'bg-green-100 text-green-800';
-      case 'Lost': return 'bg-red-100 text-red-800';
-      case 'Closed': return 'bg-purple-100 text-purple-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'New': return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'Contacted': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'Qualified': return 'bg-indigo-100 text-indigo-800 border-indigo-200';
+      case 'Proposal Sent': return 'bg-purple-100 text-purple-800 border-purple-200';
+      case 'Won': return 'bg-green-100 text-green-800 border-green-200';
+      case 'Lost': return 'bg-red-100 text-red-800 border-red-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
@@ -133,10 +134,27 @@ const LeadDetailsPage = () => {
             <div className="p-6 space-y-4">
               <div>
                 <dt className="text-sm font-medium text-gray-500 mb-1">Current Status</dt>
-                <dd>
-                  <span className={`px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full ${getStatusColor(lead.status)}`}>
-                    {lead.status}
-                  </span>
+                <dd className="mt-1">
+                  <select
+                    value={lead.status}
+                    onChange={async (e) => {
+                      const newStatus = e.target.value;
+                      try {
+                        await updateLead(id, { status: newStatus });
+                        setLead({ ...lead, status: newStatus });
+                      } catch (err) {
+                        alert('Failed to update status');
+                      }
+                    }}
+                    className={`text-sm font-semibold rounded-full px-3 py-1 border outline-none cursor-pointer appearance-none ${getStatusColor(lead.status)}`}
+                  >
+                    <option value="New">New</option>
+                    <option value="Contacted">Contacted</option>
+                    <option value="Qualified">Qualified</option>
+                    <option value="Proposal Sent">Proposal Sent</option>
+                    <option value="Won">Won</option>
+                    <option value="Lost">Lost</option>
+                  </select>
                 </dd>
               </div>
               <hr className="border-gray-100" />

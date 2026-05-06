@@ -6,7 +6,11 @@ const leadSchema = mongoose.Schema(
     email: { type: String, required: true },
     phone: { type: String },
     company: { type: String },
-    status: { type: String, default: 'New' },
+    status: { 
+      type: String, 
+      default: 'New',
+      enum: ['New', 'Contacted', 'Qualified', 'Proposal Sent', 'Won', 'Lost']
+    },
     source: { type: String, default: 'Web' },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
