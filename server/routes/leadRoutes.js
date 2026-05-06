@@ -6,6 +6,7 @@ import {
   updateLead,
   deleteLead,
 } from '../controllers/leadController.js';
+import { getNotesByLead, createNote } from '../controllers/noteController.js';
 import { protect } from '../middleware/authMiddleware.js';
 const router = express.Router();
 
@@ -15,5 +16,9 @@ router
   .get(protect, getLeadById)
   .put(protect, updateLead)
   .delete(protect, deleteLead);
+
+router.route('/:id/notes')
+  .get(protect, getNotesByLead)
+  .post(protect, createNote);
 
 export default router;
