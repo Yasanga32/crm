@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 import User from "./models/User.js";
+import Lead from "./models/Lead.js";
 import bcrypt from "bcryptjs";
 
 
@@ -32,6 +33,17 @@ const seedData = async () => {
 
         console.log("Test user created:");
         console.log(user);
+
+        await Lead.deleteMany({});
+        await Lead.create([
+            { name: "John Doe", email: "john@example.com", company: "ABC Corp", status: "New", value: 1000, owner: user._id },
+            { name: "Jane Smith", email: "jane@example.com", company: "XYZ Ltd", status: "Qualified", value: 5000, owner: user._id },
+            { name: "Bob Wilson", email: "bob@example.com", company: "Wilson & Co", status: "Won", value: 12000, owner: user._id },
+            { name: "Alice Brown", email: "alice@example.com", company: "Tech Start", status: "Lost", value: 2500, owner: user._id },
+            { name: "Charlie Davis", email: "charlie@example.com", company: "Global Inc", status: "Proposal Sent", value: 8000, owner: user._id },
+        ]);
+
+        console.log("Dummy leads seeded!");
 
         process.exit();
     } catch (error) {
