@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createLead, updateLead } from '@/api/leads';
-import { User, Mail, Phone, Building2, Tag, Share2, Save, X, ArrowLeft } from 'lucide-react';
+import { User, Mail, Phone, Building2, Tag, Share2, Save, X, ArrowLeft, DollarSign } from 'lucide-react';
 
 const LeadForm = ({ leadId = null, initialData = null }) => {
   const router = useRouter();
@@ -13,13 +13,17 @@ const LeadForm = ({ leadId = null, initialData = null }) => {
     company: '',
     status: 'New',
     source: 'Web',
+    value: '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
     if (initialData) {
-      setFormData(initialData);
+      setFormData({
+        ...initialData,
+        value: initialData.value === 0 ? '' : initialData.value
+      });
     }
   }, [initialData]);
 
@@ -32,11 +36,16 @@ const LeadForm = ({ leadId = null, initialData = null }) => {
     setLoading(true);
     setError('');
 
+    const submissionData = {
+      ...formData,
+      value: Number(formData.value) || 0
+    };
+
     try {
       if (leadId) {
-        await updateLead(leadId, formData);
+        await updateLead(leadId, submissionData);
       } else {
-        await createLead(formData);
+        await createLead(submissionData);
       }
       router.push('/dashboard/leads');
       router.refresh();
@@ -187,6 +196,31 @@ const LeadForm = ({ leadId = null, initialData = null }) => {
                   <option value="Other">Miscellaneous</option>
                 </select>
               </div>
+            </div>
+          </div>
+
+          {/* Financial Valuation */}
+          <div className="space-y-6">
+            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">Financial Valuation</h3>
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-slate-700 ml-1 flex items-center gap-2">
+                <DollarSign size={14} className="text-indigo-500" /> Estimated Deal Value (Rs.)
+              </label>
+              <div className="relative">
+                <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">Rs.</div>
+                <input
+                  type="number"
+                  name="value"
+                  value={formData.value}
+                  onChange={handleChange}
+                  onFocus={(e) => e.target.select()}
+                  className="w-full pl-16 pr-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all text-slate-700 font-bold placeholder:text-slate-300"
+                  placeholder="0"
+                />
+              </div>
+              <p className="text-[10px] text-slate-400 font-medium ml-1">
+                Enter the projected revenue for this opportunity. This affects your Global Pipeline Value.
+              </p>
             </div>
           </div>
 

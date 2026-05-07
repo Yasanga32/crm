@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getLeadById, deleteLead as removeLead, updateLead } from '@/api/leads';
 import LeadNotes from '@/components/LeadNotes';
-import { ArrowLeft, Edit2, Trash2, Mail, Phone, Building2, Calendar, User, Info, TrendingUp } from 'lucide-react';
+import { ArrowLeft, Edit2, Trash2, Mail, Phone, Building2, Calendar, User, Info, TrendingUp, DollarSign } from 'lucide-react';
 
 const LeadDetailsPage = () => {
   const params = useParams();
@@ -72,8 +72,8 @@ const LeadDetailsPage = () => {
           <h2 className="text-2xl font-bold text-slate-900">Oops! Something went wrong</h2>
           <p className="text-rose-600 mt-2 font-medium">{error}</p>
         </div>
-        <button 
-          onClick={() => router.push('/dashboard/leads')} 
+        <button
+          onClick={() => router.push('/dashboard/leads')}
           className="inline-flex items-center gap-2 text-indigo-600 font-bold hover:gap-3 transition-all"
         >
           <ArrowLeft size={20} />
@@ -90,8 +90,8 @@ const LeadDetailsPage = () => {
       {/* Navigation & Actions */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
-          <button 
-            onClick={() => router.push('/dashboard/leads')} 
+          <button
+            onClick={() => router.push('/dashboard/leads')}
             className="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-sm"
           >
             <ArrowLeft size={20} />
@@ -168,6 +168,14 @@ const LeadDetailsPage = () => {
               </h3>
             </div>
             <div className="p-6 space-y-6">
+              {/* Value Card */}
+              <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 space-y-1">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                  <DollarSign size={12} className="text-indigo-500" /> Estimated Deal Value
+                </p>
+                <p className="text-2xl font-black text-slate-900">Rs. {lead.value || 0}</p>
+              </div>
+
               <div className="space-y-3">
                 <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Update Progress</label>
                 <select
@@ -219,7 +227,7 @@ const LeadDetailsPage = () => {
               </div>
             </div>
           </div>
-          
+
           {/* Quick Stats or Tips Card */}
           <div className="bg-indigo-600 rounded-2xl p-6 text-white shadow-lg shadow-indigo-200">
             <h4 className="font-bold text-lg mb-2">Sales Tip</h4>

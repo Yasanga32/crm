@@ -2,11 +2,12 @@ import Lead from '../models/Lead.js';
 
 export const getStats = async (req, res) => {
   try {
-    // Total leads
-    const totalLeads = await Lead.countDocuments();
+    // Total leads for this user
+    const totalLeads = await Lead.countDocuments({ owner: req.user._id });
 
-    // Counts by status
+    // Counts by status for this user
     const statusCounts = await Lead.aggregate([
+      { $match: { owner: req.user._id } },
       {
         $group: {
           _id: '$status',
@@ -30,8 +31,9 @@ export const getStats = async (req, res) => {
       }
     });
 
-    // Value calculations
+    // Value calculations for this user
     const valueStats = await Lead.aggregate([
+      { $match: { owner: req.user._id } },
       {
         $group: {
           _id: null,

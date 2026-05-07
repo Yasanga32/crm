@@ -25,14 +25,6 @@ export default function Dashboard() {
     fetchStats();
   }, []);
 
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
-
   const StatCard = ({ label, value, icon: Icon, color, subValue, percentage = 60 }) => (
     <div className="bg-white border border-slate-200/60 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 group">
       <div className="flex justify-between items-start mb-4">
@@ -49,8 +41,8 @@ export default function Dashboard() {
         {subValue && <p className="text-xs text-slate-400 mt-2 font-medium leading-relaxed">{subValue}</p>}
       </div>
       <div className="h-1.5 w-full bg-slate-50 rounded-full mt-6 overflow-hidden">
-        <div 
-          className={`h-full ${color} rounded-full transition-all duration-1000 ease-out`} 
+        <div
+          className={`h-full ${color} rounded-full transition-all duration-1000 ease-out`}
           style={{ width: `${percentage}%` }}
         ></div>
       </div>
@@ -98,33 +90,40 @@ export default function Dashboard() {
       )}
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard 
-          label="Active Prospects" 
-          value={stats?.totalLeads || 0} 
-          icon={Users} 
-          color="bg-indigo-600" 
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <StatCard
+          label="Total Prospects"
+          value={stats?.totalLeads || 0}
+          icon={Users}
+          color="bg-indigo-600"
           percentage={100}
         />
-        <StatCard 
-          label="Unprocessed" 
-          value={stats?.statusCounts?.New || 0} 
-          icon={Target} 
-          color="bg-amber-500" 
+        <StatCard
+          label="New Leads"
+          value={stats?.statusCounts?.New || 0}
+          icon={Target}
+          color="bg-amber-500"
           percentage={(stats?.statusCounts?.New / stats?.totalLeads * 100) || 0}
         />
-        <StatCard 
-          label="Strategic Wins" 
-          value={stats?.statusCounts?.Won || 0} 
-          icon={CheckCircle} 
-          color="bg-emerald-500" 
+        <StatCard
+          label="Qualified"
+          value={stats?.statusCounts?.Qualified || 0}
+          icon={Sparkles}
+          color="bg-violet-500"
+          percentage={(stats?.statusCounts?.Qualified / stats?.totalLeads * 100) || 0}
+        />
+        <StatCard
+          label="Won Deals"
+          value={stats?.statusCounts?.Won || 0}
+          icon={CheckCircle}
+          color="bg-emerald-500"
           percentage={(stats?.statusCounts?.Won / stats?.totalLeads * 100) || 0}
         />
-        <StatCard 
-          label="Lost Opportunities" 
-          value={stats?.statusCounts?.Lost || 0} 
-          icon={XCircle} 
-          color="bg-rose-500" 
+        <StatCard
+          label="Lost Deals"
+          value={stats?.statusCounts?.Lost || 0}
+          icon={XCircle}
+          color="bg-rose-500"
           percentage={(stats?.statusCounts?.Lost / stats?.totalLeads * 100) || 0}
         />
       </div>
@@ -143,7 +142,7 @@ export default function Dashboard() {
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest">Global Pipeline Value</h3>
-                  <p className="text-3xl font-extrabold text-slate-900 mt-1">{formatCurrency(stats?.totalValue || 0)}</p>
+                  <p className="text-3xl font-extrabold text-slate-900 mt-1">Rs. {stats?.totalValue || 0}</p>
                 </div>
               </div>
               <p className="text-slate-500 font-medium max-w-md leading-relaxed">
@@ -152,7 +151,7 @@ export default function Dashboard() {
               <div className="flex gap-4">
                 <div className="px-4 py-2 bg-slate-50 rounded-xl border border-slate-100">
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Qualified Value</p>
-                  <p className="text-lg font-bold text-indigo-600">{formatCurrency((stats?.statusCounts?.Qualified || 0) * 1000)}*</p>
+                  <p className="text-lg font-bold text-indigo-600">Rs. {(stats?.statusCounts?.Qualified || 0) * 1000}*</p>
                 </div>
                 <div className="px-4 py-2 bg-slate-50 rounded-xl border border-slate-100">
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Projection</p>
@@ -171,12 +170,12 @@ export default function Dashboard() {
             </div>
             <h3 className="text-lg font-bold tracking-tight">Revenue Realized</h3>
             <div className="space-y-1">
-              <p className="text-4xl font-black">{formatCurrency(stats?.wonValue || 0)}</p>
+              <p className="text-4xl font-black">Rs. {stats?.wonValue || 0}</p>
               <p className="text-indigo-100/60 text-xs font-bold uppercase tracking-widest">Confirmed Growth</p>
             </div>
           </div>
-          <Link 
-            href="/dashboard/leads?status=Won" 
+          <Link
+            href="/dashboard/leads?status=Won"
             className="relative z-10 mt-8 flex items-center justify-between group/btn"
           >
             <span className="font-bold text-sm">View closed deals</span>

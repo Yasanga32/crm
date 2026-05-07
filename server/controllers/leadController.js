@@ -62,7 +62,7 @@ export const getLeadById = async (req, res) => {
 
 
 export const createLead = async (req, res) => {
-  const { name, email, phone, company, status, source } = req.body;
+  const { name, email, phone, company, status, source, value } = req.body;
 
   try {
     const lead = new Lead({
@@ -72,6 +72,7 @@ export const createLead = async (req, res) => {
       company,
       status,
       source,
+      value: value || 0,
       owner: req.user._id,
     });
 
@@ -99,6 +100,7 @@ export const updateLead = async (req, res) => {
       lead.company = req.body.company || lead.company;
       lead.status = req.body.status || lead.status;
       lead.source = req.body.source || lead.source;
+      lead.value = req.body.value !== undefined ? req.body.value : lead.value;
 
       const updatedLead = await lead.save();
       res.json(updatedLead);

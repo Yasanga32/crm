@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getLeads, deleteLead as removeLead, updateLead } from '@/api/leads';
-import { Search, Filter, Plus, MoreHorizontal, Mail, Building2, User as UserIcon, Trash2, Edit3, Eye, RotateCcw } from 'lucide-react';
+import { Search, Filter, Plus, Mail, Building2, User as UserIcon, Trash2, Edit3, Eye, RotateCcw, DollarSign } from 'lucide-react';
 
 const LeadsPage = () => {
   const [leads, setLeads] = useState([]);
@@ -242,6 +242,10 @@ const LeadsPage = () => {
                         <span className="flex items-center gap-1.5 text-sm text-slate-500">
                           <Building2 size={14} className="text-slate-400" />
                           {lead.company || 'Private'}
+                        </span>
+                        <span className="flex items-center gap-1.5 text-sm font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-lg border border-indigo-100">
+                          <DollarSign size={12} />
+                          Rs. {lead.value || 0}
                         </span>
                       </div>
                     </div>
