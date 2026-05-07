@@ -2,10 +2,12 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Users, Bell, Search, Settings } from 'lucide-react';
+import { LayoutDashboard, Users, LogOut } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 const Navbar = () => {
   const pathname = usePathname();
+  const { logout } = useAuth();
   
   const isActive = (path) => pathname === path || pathname?.startsWith(path + '/');
 
@@ -41,25 +43,14 @@ const Navbar = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="hidden lg:flex items-center relative group">
-              <Search className="absolute left-3 text-slate-400" size={16} />
-              <input 
-                type="text" 
-                placeholder="Quick search..." 
-                className="pl-10 pr-4 py-2 bg-slate-100 border border-transparent rounded-xl text-xs font-bold focus:bg-white focus:border-indigo-100 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all w-48"
-              />
-            </div>
-            
-            <button className="p-2.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all relative">
-              <Bell size={20} />
-              <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
-            </button>
-            
-            <div className="h-8 w-px bg-slate-200 mx-1"></div>
-            
-            <button className="p-2.5 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all">
-              <Settings size={20} />
+          <div className="flex items-center">
+            <button 
+              onClick={logout}
+              className="flex items-center gap-2 px-4 py-2.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all font-bold text-sm active:scale-95"
+              title="Logout"
+            >
+              <LogOut size={18} />
+              <span className="hidden sm:inline">Logout</span>
             </button>
           </div>
         </div>

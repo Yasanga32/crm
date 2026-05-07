@@ -224,12 +224,13 @@ const LeadsPage = () => {
                 key={lead._id} 
                 className="group bg-white rounded-2xl border border-slate-200/60 p-4 md:p-5 hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300 animate-in"
               >
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 font-bold text-lg border border-indigo-100 shadow-sm">
+                <div className="flex flex-col md:flex-row md:items-center gap-4">
+                  {/* Lead Info - Left */}
+                  <div className="flex items-start gap-4 flex-1 min-w-0">
+                    <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 font-bold text-lg border border-indigo-100 shadow-sm shrink-0">
                       {lead.name.charAt(0)}
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <Link href={`/dashboard/leads/${lead._id}`} className="text-lg font-bold text-slate-900 hover:text-indigo-600 transition-colors">
                         {lead.name}
                       </Link>
@@ -246,7 +247,8 @@ const LeadsPage = () => {
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-3">
+                  {/* Pipeline Status - Center */}
+                  <div className="flex items-center justify-center flex-shrink-0">
                     <select
                       value={lead.status}
                       onChange={(e) => handleStatusChange(lead._id, e.target.value)}
@@ -259,32 +261,31 @@ const LeadsPage = () => {
                       <option value="Won">Won</option>
                       <option value="Lost">Lost</option>
                     </select>
+                  </div>
 
-                    <div className="h-6 w-px bg-slate-100 hidden md:block mx-1"></div>
-
-                    <div className="flex items-center gap-1.5">
-                      <Link 
-                        href={`/dashboard/leads/${lead._id}`} 
-                        className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
-                        title="View Details"
-                      >
-                        <Eye size={18} />
-                      </Link>
-                      <Link 
-                        href={`/dashboard/leads/${lead._id}/edit`} 
-                        className="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all"
-                        title="Edit Lead"
-                      >
-                        <Edit3 size={18} />
-                      </Link>
-                      <button 
-                        onClick={() => deleteLead(lead._id)}
-                        className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
-                        title="Delete Lead"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
+                  {/* Actions - Right */}
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    <Link 
+                      href={`/dashboard/leads/${lead._id}`} 
+                      className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                      title="View Details"
+                    >
+                      <Eye size={18} />
+                    </Link>
+                    <Link 
+                      href={`/dashboard/leads/${lead._id}/edit`} 
+                      className="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all"
+                      title="Edit Lead"
+                    >
+                      <Edit3 size={18} />
+                    </Link>
+                    <button 
+                      onClick={() => deleteLead(lead._id)}
+                      className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
+                      title="Delete Lead"
+                    >
+                      <Trash2 size={18} />
+                    </button>
                   </div>
                 </div>
               </div>

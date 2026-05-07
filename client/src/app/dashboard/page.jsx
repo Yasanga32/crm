@@ -1,12 +1,12 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { LayoutDashboard, LogOut, Users, Target, CheckCircle, XCircle, DollarSign, Briefcase, TrendingUp, Sparkles, ArrowRight } from 'lucide-react';
+import { LayoutDashboard, Users, Target, CheckCircle, XCircle, DollarSign, TrendingUp, Sparkles, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { getDashboardStats } from '@/api/dashboard';
 
 export default function Dashboard() {
-  const { userInfo, logout } = useAuth();
+  const { userInfo } = useAuth();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -85,23 +85,6 @@ export default function Dashboard() {
             Hello, <span className="text-indigo-600">{userInfo?.name?.split(' ')[0]}</span>
           </h1>
           <p className="text-slate-500 font-medium">Here's a strategic overview of your sales performance today.</p>
-        </div>
-        
-        <div className="flex items-center gap-3">
-          <Link 
-            href="/dashboard/leads"
-            className="group flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3.5 rounded-2xl transition-all font-bold shadow-lg shadow-slate-200 active:scale-95"
-          >
-            <span>Lead Intelligence</span>
-            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-          </Link>
-          <button 
-            onClick={logout}
-            className="p-3.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-2xl transition-all border border-transparent hover:border-rose-100 active:scale-95"
-            title="Logout"
-          >
-            <LogOut size={22} />
-          </button>
         </div>
       </div>
 
