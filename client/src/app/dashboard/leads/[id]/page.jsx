@@ -162,7 +162,7 @@ const LeadDetailsPage = () => {
         <div className="lg:col-span-4 space-y-6">
           <div className="bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden">
             <div className="px-6 py-5 border-b border-slate-100 bg-slate-50/50">
-              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center justify-center gap-2">
                 <TrendingUp size={16} className="text-indigo-600" />
                 Pipeline Status
               </h3>

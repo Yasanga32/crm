@@ -151,7 +151,7 @@ const LeadForm = ({ leadId = null, initialData = null }) => {
             <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">Sales Classification</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700 ml-1 flex items-center gap-2">
+                <label className="text-sm font-bold text-slate-700 ml-1 flex items-center justify-center gap-2">
                   <Tag size={14} className="text-indigo-500" /> Pipeline Status
                 </label>
                 <select
