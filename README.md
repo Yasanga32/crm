@@ -14,7 +14,7 @@ A modern, high-performance CRM system built with Next.js and Node.js. Track lead
 
 | Dashboard | Leads Management |
 |-----------|------------------|
-| ![Dashboard](client/public/screenshots/dashboard.png) | ![Leads](client/public/screenshots/leads.png) |
+| ![Dashboard](screenshots/dashboard.png) | ![Leads](screenshots/leads.png) |
 
 
 ## 🛠 Tech Stack
