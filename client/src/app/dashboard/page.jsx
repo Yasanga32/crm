@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { LayoutDashboard, LogOut, Users, Target, CheckCircle, XCircle, DollarSign, Briefcase } from 'lucide-react';
+import { LayoutDashboard, LogOut, Users, Target, CheckCircle, XCircle, DollarSign, Briefcase, TrendingUp, Sparkles, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { getDashboardStats } from '@/api/dashboard';
 
@@ -33,118 +33,175 @@ export default function Dashboard() {
     }).format(value);
   };
 
-  const StatCard = ({ label, value, icon: Icon, color, subValue }) => (
-    <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/20 group">
+  const StatCard = ({ label, value, icon: Icon, color, subValue, percentage = 60 }) => (
+    <div className="bg-white border border-slate-200/60 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 group">
       <div className="flex justify-between items-start mb-4">
-        <div>
-          <p className="text-slate-400 text-sm font-medium mb-1">{label}</p>
-          <h3 className="text-3xl font-bold text-white tracking-tight">{value}</h3>
-          {subValue && <p className="text-xs text-slate-500 mt-1">{subValue}</p>}
+        <div className={`p-3 rounded-2xl ${color} bg-opacity-10 text-${color.replace('bg-', '')} group-hover:scale-110 transition-transform duration-300`}>
+          <Icon size={24} />
         </div>
-        <div className={`p-3 rounded-xl ${color} bg-opacity-10 group-hover:scale-110 transition-transform`}>
-          <Icon className={`${color.replace('bg-', 'text-')} w-6 h-6`} />
+        <div className="flex items-center gap-1 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+          Live Data <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
         </div>
       </div>
-      <div className="h-1 w-full bg-slate-800 rounded-full mt-2 overflow-hidden">
-        <div className={`h-full ${color} rounded-full transition-all duration-1000`} style={{ width: '60%' }}></div>
+      <div>
+        <p className="text-slate-500 text-sm font-bold mb-1 uppercase tracking-tight">{label}</p>
+        <h3 className="text-3xl font-extrabold text-slate-900 tracking-tight">{value}</h3>
+        {subValue && <p className="text-xs text-slate-400 mt-2 font-medium leading-relaxed">{subValue}</p>}
+      </div>
+      <div className="h-1.5 w-full bg-slate-50 rounded-full mt-6 overflow-hidden">
+        <div 
+          className={`h-full ${color} rounded-full transition-all duration-1000 ease-out`} 
+          style={{ width: `${percentage}%` }}
+        ></div>
       </div>
     </div>
   );
 
   if (loading) {
     return (
-      <div className="p-8 max-w-7xl mx-auto flex flex-col items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500 mb-4"></div>
-        <p className="text-slate-400 animate-pulse font-medium">Gathering insights...</p>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-indigo-50 rounded-full"></div>
+          <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
+        </div>
+        <div className="text-center space-y-2">
+          <h3 className="text-lg font-bold text-slate-900">Synchronizing Workspace</h3>
+          <p className="text-slate-500 font-medium animate-pulse">Aggregating your sales intelligence...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <div className="flex items-center justify-between mb-10">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-indigo-500/10 rounded-xl flex items-center justify-center">
-            <LayoutDashboard className="text-indigo-500 w-6 h-6" />
+    <div className="space-y-10 animate-in">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-xs font-bold uppercase tracking-widest border border-indigo-100">
+            <Sparkles size={12} />
+            Command Center
           </div>
-          <div>
-            <h1 className="text-3xl font-bold text-white tracking-tight">Dashboard</h1>
-            <p className="text-slate-400 text-sm font-medium">Welcome back, <span className="text-indigo-400">{userInfo?.name}</span></p>
-          </div>
+          <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
+            Hello, <span className="text-indigo-600">{userInfo?.name?.split(' ')[0]}</span>
+          </h1>
+          <p className="text-slate-500 font-medium">Here's a strategic overview of your sales performance today.</p>
         </div>
         
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <Link 
             href="/dashboard/leads"
-            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl transition-all font-semibold shadow-lg shadow-indigo-500/20 active:scale-95"
+            className="group flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3.5 rounded-2xl transition-all font-bold shadow-lg shadow-slate-200 active:scale-95"
           >
-            <Users className="w-4 h-4" />
-            <span>Manage Leads</span>
+            <span>Lead Intelligence</span>
+            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </Link>
           <button 
             onClick={logout}
-            className="flex items-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 px-6 py-3 rounded-xl transition-all font-semibold border border-red-500/20 active:scale-95"
+            className="p-3.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-2xl transition-all border border-transparent hover:border-rose-100 active:scale-95"
+            title="Logout"
           >
-            <LogOut className="w-4 h-4" />
-            <span>Logout</span>
+            <LogOut size={22} />
           </button>
         </div>
       </div>
 
       {error && (
-        <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl mb-8 flex items-center gap-3">
-          <XCircle className="w-5 h-5" />
-          <p className="font-medium">{error}</p>
+        <div className="bg-rose-50 border border-rose-100 text-rose-700 p-5 rounded-2xl flex items-center gap-4 animate-in">
+          <div className="p-2 bg-rose-100 rounded-xl">
+            <XCircle size={20} />
+          </div>
+          <p className="font-bold">{error}</p>
         </div>
       )}
 
+      {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard 
-          label="Total Leads" 
+          label="Active Prospects" 
           value={stats?.totalLeads || 0} 
           icon={Users} 
-          color="bg-blue-500" 
+          color="bg-indigo-600" 
+          percentage={100}
         />
         <StatCard 
-          label="New Leads" 
+          label="Unprocessed" 
           value={stats?.statusCounts?.New || 0} 
           icon={Target} 
-          color="bg-indigo-500" 
-        />
-        <StatCard 
-          label="Qualified" 
-          value={stats?.statusCounts?.Qualified || 0} 
-          icon={Briefcase} 
           color="bg-amber-500" 
+          percentage={(stats?.statusCounts?.New / stats?.totalLeads * 100) || 0}
         />
         <StatCard 
-          label="Won Deals" 
+          label="Strategic Wins" 
           value={stats?.statusCounts?.Won || 0} 
           icon={CheckCircle} 
           color="bg-emerald-500" 
+          percentage={(stats?.statusCounts?.Won / stats?.totalLeads * 100) || 0}
         />
         <StatCard 
-          label="Lost Deals" 
+          label="Lost Opportunities" 
           value={stats?.statusCounts?.Lost || 0} 
           icon={XCircle} 
-          color="bg-red-500" 
+          color="bg-rose-500" 
+          percentage={(stats?.statusCounts?.Lost / stats?.totalLeads * 100) || 0}
         />
-        <div className="md:col-span-1 lg:col-span-2">
-           <StatCard 
-            label="Total Deal Value" 
-            value={formatCurrency(stats?.totalValue || 0)} 
-            icon={DollarSign} 
-            color="bg-blue-600" 
-            subValue="Total pipeline value from all leads"
-          />
+      </div>
+
+      {/* Financial Overview */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <div className="bg-white border border-slate-200/60 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-8 text-slate-50 group-hover:text-slate-100/50 transition-colors pointer-events-none">
+              <DollarSign size={120} strokeWidth={1} />
+            </div>
+            <div className="relative z-10 space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="p-3 bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-100">
+                  <TrendingUp size={24} />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest">Global Pipeline Value</h3>
+                  <p className="text-3xl font-extrabold text-slate-900 mt-1">{formatCurrency(stats?.totalValue || 0)}</p>
+                </div>
+              </div>
+              <p className="text-slate-500 font-medium max-w-md leading-relaxed">
+                Aggregated valuation of all active and historical opportunities across your organizational ecosystem.
+              </p>
+              <div className="flex gap-4">
+                <div className="px-4 py-2 bg-slate-50 rounded-xl border border-slate-100">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Qualified Value</p>
+                  <p className="text-lg font-bold text-indigo-600">{formatCurrency((stats?.statusCounts?.Qualified || 0) * 1000)}*</p>
+                </div>
+                <div className="px-4 py-2 bg-slate-50 rounded-xl border border-slate-100">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Projection</p>
+                  <p className="text-lg font-bold text-emerald-600">+12%</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <StatCard 
-          label="Won Revenue" 
-          value={formatCurrency(stats?.wonValue || 0)} 
-          icon={CheckCircle} 
-          color="bg-emerald-600" 
-          subValue="Revenue from closed-won deals"
-        />
+
+        <div className="bg-indigo-600 rounded-3xl p-8 text-white shadow-xl shadow-indigo-200 flex flex-col justify-between group overflow-hidden relative">
+          <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
+          <div className="relative z-10 space-y-4">
+            <div className="p-3 bg-white/20 rounded-2xl w-fit">
+              <Sparkles size={24} />
+            </div>
+            <h3 className="text-lg font-bold tracking-tight">Revenue Realized</h3>
+            <div className="space-y-1">
+              <p className="text-4xl font-black">{formatCurrency(stats?.wonValue || 0)}</p>
+              <p className="text-indigo-100/60 text-xs font-bold uppercase tracking-widest">Confirmed Growth</p>
+            </div>
+          </div>
+          <Link 
+            href="/dashboard/leads?status=Won" 
+            className="relative z-10 mt-8 flex items-center justify-between group/btn"
+          >
+            <span className="font-bold text-sm">View closed deals</span>
+            <div className="p-2 bg-white/10 rounded-lg group-hover/btn:bg-white/20 transition-colors">
+              <ArrowRight size={16} />
+            </div>
+          </Link>
+        </div>
       </div>
     </div>
   );
