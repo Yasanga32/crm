@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getLeads, deleteLead as removeLead, updateLead } from '@/api/leads';
+import { Search, Filter, Plus, MoreHorizontal, Mail, Building2, User as UserIcon, Trash2, Edit3, Eye, RotateCcw } from 'lucide-react';
 
 const LeadsPage = () => {
   const [leads, setLeads] = useState([]);
@@ -66,15 +67,15 @@ const LeadsPage = () => {
     }
   };
 
-  const getStatusColor = (status) => {
+  const getStatusStyle = (status) => {
     switch (status) {
-      case 'New': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'Contacted': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'Qualified': return 'bg-indigo-100 text-indigo-800 border-indigo-200';
-      case 'Proposal Sent': return 'bg-purple-100 text-purple-800 border-purple-200';
-      case 'Won': return 'bg-green-100 text-green-800 border-green-200';
-      case 'Lost': return 'bg-red-100 text-red-800 border-red-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'New': return 'bg-indigo-50 text-indigo-700 border-indigo-100 ring-indigo-500/10';
+      case 'Contacted': return 'bg-amber-50 text-amber-700 border-amber-100 ring-amber-500/10';
+      case 'Qualified': return 'bg-emerald-50 text-emerald-700 border-emerald-100 ring-emerald-500/10';
+      case 'Proposal Sent': return 'bg-violet-50 text-violet-700 border-violet-100 ring-violet-500/10';
+      case 'Won': return 'bg-blue-50 text-blue-700 border-blue-100 ring-blue-500/10';
+      case 'Lost': return 'bg-rose-50 text-rose-700 border-rose-100 ring-rose-500/10';
+      default: return 'bg-slate-50 text-slate-700 border-slate-100 ring-slate-500/10';
     }
   };
 
@@ -87,161 +88,169 @@ const LeadsPage = () => {
     }
   };
 
-  if (loading) return <div className="flex justify-center p-10"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div></div>;
+  const SkeletonRow = () => (
+    <div className="bg-white p-4 rounded-xl mb-3 border border-slate-100 animate-pulse flex items-center justify-between">
+      <div className="flex items-center gap-4">
+        <div className="w-10 h-10 bg-slate-100 rounded-full"></div>
+        <div className="space-y-2">
+          <div className="h-4 w-32 bg-slate-100 rounded"></div>
+          <div className="h-3 w-48 bg-slate-50 rounded"></div>
+        </div>
+      </div>
+      <div className="flex gap-4">
+        <div className="h-8 w-24 bg-slate-100 rounded-full"></div>
+        <div className="h-8 w-24 bg-slate-100 rounded-lg"></div>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <div className="mb-6">
-        <Link 
-          href="/dashboard" 
-          className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          Back to Dashboard
-        </Link>
-      </div>
-      <div className="flex justify-between items-center mb-8">
+    <div className="space-y-8 pb-12">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Leads</h1>
-          <p className="text-gray-500 mt-1">Manage your customer prospects and opportunities.</p>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900">Leads Management</h1>
+          <p className="text-slate-500 mt-1">Track and nurture your customer relationships.</p>
         </div>
         <Link 
           href="/dashboard/leads/new"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors flex items-center gap-2 shadow-md"
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold shadow-sm shadow-indigo-200 transition-all active:scale-95"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-          </svg>
-          New Lead
+          <Plus size={18} />
+          <span>New Lead</span>
         </Link>
       </div>
       
-      {/* Search and Filters */}
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          {/* Search */}
-          <div className="lg:col-span-2 relative">
-            <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </span>
+      {/* Filters Card */}
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-5 space-y-4">
+        <div className="flex items-center gap-2 text-slate-900 font-semibold mb-2">
+          <Filter size={18} className="text-indigo-600" />
+          <span>Filter Leads</span>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="relative group">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors" size={18} />
             <input
               type="text"
-              placeholder="Search by name, email or company..."
+              placeholder="Search leads..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all"
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all text-sm"
             />
           </div>
 
-          {/* Status Filter */}
-          <div>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg border appearance-none cursor-pointer"
-            >
-              <option value="">All Statuses</option>
-              <option value="New">New</option>
-              <option value="Contacted">Contacted</option>
-              <option value="Qualified">Qualified</option>
-              <option value="Proposal Sent">Proposal Sent</option>
-              <option value="Won">Won</option>
-              <option value="Lost">Lost</option>
-            </select>
-          </div>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all text-sm appearance-none cursor-pointer text-slate-700"
+          >
+            <option value="">All Statuses</option>
+            <option value="New">New</option>
+            <option value="Contacted">Contacted</option>
+            <option value="Qualified">Qualified</option>
+            <option value="Proposal Sent">Proposal Sent</option>
+            <option value="Won">Won</option>
+            <option value="Lost">Lost</option>
+          </select>
 
-          {/* Source Filter */}
-          <div>
-            <select
-              value={sourceFilter}
-              onChange={(e) => setSourceFilter(e.target.value)}
-              className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg border appearance-none cursor-pointer"
-            >
-              <option value="">All Sources</option>
-              <option value="Web">Web</option>
-              <option value="Referral">Referral</option>
-              <option value="LinkedIn">LinkedIn</option>
-              <option value="Cold Call">Cold Call</option>
-              <option value="Email Campaign">Email Campaign</option>
-              <option value="Conference">Conference</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
+          <select
+            value={sourceFilter}
+            onChange={(e) => setSourceFilter(e.target.value)}
+            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all text-sm appearance-none cursor-pointer text-slate-700"
+          >
+            <option value="">All Sources</option>
+            <option value="Web">Web</option>
+            <option value="Referral">Referral</option>
+            <option value="LinkedIn">LinkedIn</option>
+            <option value="Cold Call">Cold Call</option>
+            <option value="Email Campaign">Email Campaign</option>
+            <option value="Conference">Conference</option>
+            <option value="Other">Other</option>
+          </select>
 
-          {/* Salesperson Filter */}
-          <div>
-            <select
-              value={salespersonFilter}
-              onChange={(e) => setSalespersonFilter(e.target.value)}
-              className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg border appearance-none cursor-pointer"
-            >
-              <option value="">All Salespeople</option>
-              {users.map(user => (
-                <option key={user._id} value={user._id}>{user.name}</option>
-              ))}
-            </select>
-          </div>
+          <select
+            value={salespersonFilter}
+            onChange={(e) => setSalespersonFilter(e.target.value)}
+            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all text-sm appearance-none cursor-pointer text-slate-700"
+          >
+            <option value="">All Assignees</option>
+            {users.map(user => (
+              <option key={user._id} value={user._id}>{user.name}</option>
+            ))}
+          </select>
         </div>
 
         {(search || statusFilter || sourceFilter || salespersonFilter) && (
-          <div className="mt-4 flex justify-end">
+          <div className="flex justify-end pt-2">
             <button
-              onClick={() => {
-                setSearch('');
-                setStatusFilter('');
-                setSourceFilter('');
-                setSalespersonFilter('');
-              }}
-              className="text-xs text-red-600 hover:text-red-800 font-medium flex items-center gap-1"
+              onClick={() => { setSearch(''); setStatusFilter(''); setSourceFilter(''); setSalespersonFilter(''); }}
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-rose-600 hover:bg-rose-50 px-3 py-1.5 rounded-lg transition-colors"
             >
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-              Clear All Filters
+              <RotateCcw size={14} />
+              Reset Filters
             </button>
           </div>
         )}
       </div>
 
-      {error && <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6 border border-red-100">{error}</div>}
+      {error && (
+        <div className="bg-rose-50 border border-rose-100 text-rose-700 p-4 rounded-xl flex items-center gap-3 animate-in">
+          <div className="w-1.5 h-1.5 bg-rose-500 rounded-full"></div>
+          {error}
+        </div>
+      )}
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lead Info</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Source</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {leads.length === 0 ? (
-              <tr>
-                <td colSpan="5" className="px-6 py-10 text-center text-gray-500">No leads found. Start by creating one!</td>
-              </tr>
-            ) : (
-              leads.map((lead) => (
-                <tr key={lead._id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex flex-col">
-                      <div className="text-sm font-semibold text-gray-900">{lead.name}</div>
-                      <div className="text-sm text-gray-500">{lead.email}</div>
+      {/* Leads List */}
+      <div className="space-y-4">
+        {loading ? (
+          <>
+            <SkeletonRow />
+            <SkeletonRow />
+            <SkeletonRow />
+          </>
+        ) : leads.length === 0 ? (
+          <div className="bg-white rounded-2xl border border-dashed border-slate-300 p-12 text-center">
+            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <UserIcon className="text-slate-300" size={32} />
+            </div>
+            <h3 className="text-lg font-bold text-slate-900">No leads found</h3>
+            <p className="text-slate-500 max-w-xs mx-auto mt-1">Try adjusting your filters or search terms to find what you're looking for.</p>
+          </div>
+        ) : (
+          <div className="grid gap-4">
+            {leads.map((lead) => (
+              <div 
+                key={lead._id} 
+                className="group bg-white rounded-2xl border border-slate-200/60 p-4 md:p-5 hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300 animate-in"
+              >
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 font-bold text-lg border border-indigo-100 shadow-sm">
+                      {lead.name.charAt(0)}
                     </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {lead.company || '-'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div>
+                      <Link href={`/dashboard/leads/${lead._id}`} className="text-lg font-bold text-slate-900 hover:text-indigo-600 transition-colors">
+                        {lead.name}
+                      </Link>
+                      <div className="flex flex-wrap items-center gap-y-1 gap-x-4 mt-1">
+                        <span className="flex items-center gap-1.5 text-sm text-slate-500">
+                          <Mail size={14} className="text-slate-400" />
+                          {lead.email}
+                        </span>
+                        <span className="flex items-center gap-1.5 text-sm text-slate-500">
+                          <Building2 size={14} className="text-slate-400" />
+                          {lead.company || 'Private'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-3">
                     <select
                       value={lead.status}
                       onChange={(e) => handleStatusChange(lead._id, e.target.value)}
-                      className={`text-xs font-semibold rounded-full px-3 py-1 border outline-none cursor-pointer appearance-none ${getStatusColor(lead.status)}`}
+                      className={`text-xs font-bold rounded-full px-4 py-1.5 border ring-1 outline-none cursor-pointer appearance-none transition-all ${getStatusStyle(lead.status)}`}
                     >
                       <option value="New">New</option>
                       <option value="Contacted">Contacted</option>
@@ -250,27 +259,38 @@ const LeadsPage = () => {
                       <option value="Won">Won</option>
                       <option value="Lost">Lost</option>
                     </select>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {lead.source}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <div className="flex justify-end gap-3">
-                      <Link href={`/dashboard/leads/${lead._id}`} className="text-blue-600 hover:text-blue-900">View</Link>
-                      <Link href={`/dashboard/leads/${lead._id}/edit`} className="text-yellow-600 hover:text-yellow-900">Edit</Link>
+
+                    <div className="h-6 w-px bg-slate-100 hidden md:block mx-1"></div>
+
+                    <div className="flex items-center gap-1.5">
+                      <Link 
+                        href={`/dashboard/leads/${lead._id}`} 
+                        className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                        title="View Details"
+                      >
+                        <Eye size={18} />
+                      </Link>
+                      <Link 
+                        href={`/dashboard/leads/${lead._id}/edit`} 
+                        className="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all"
+                        title="Edit Lead"
+                      >
+                        <Edit3 size={18} />
+                      </Link>
                       <button 
                         onClick={() => deleteLead(lead._id)}
-                        className="text-red-600 hover:text-red-900"
+                        className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
+                        title="Delete Lead"
                       >
-                        Delete
+                        <Trash2 size={18} />
                       </button>
                     </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

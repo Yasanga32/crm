@@ -7,7 +7,7 @@ import {
 import { protect } from '../middleware/authMiddleware.js';
 const router = express.Router();
 
-router.route('/:leadId').get(protect, getNotesByLead).post(protect, createNote);
-router.route('/note/:id').delete(protect, deleteNote);
+router.route('/:id').get(protect, getNotesByLead).post(protect, createNote);
+router.route('/:id/delete').delete(protect, deleteNote);
 
 export default router;

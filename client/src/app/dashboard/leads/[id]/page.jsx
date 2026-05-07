@@ -4,6 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getLeadById, deleteLead as removeLead, updateLead } from '@/api/leads';
 import LeadNotes from '@/components/LeadNotes';
+import { ArrowLeft, Edit2, Trash2, Mail, Phone, Building2, Calendar, User, Info, TrendingUp } from 'lucide-react';
 
 const LeadDetailsPage = () => {
   const params = useParams();
@@ -20,7 +21,7 @@ const LeadDetailsPage = () => {
         const data = await getLeadById(id);
         setLead(data);
       } catch (err) {
-        setError('Failed to fetch lead details');
+        setError('Failed to fetch lead details. It might have been deleted.');
       } finally {
         setLoading(false);
       }
@@ -42,25 +43,42 @@ const LeadDetailsPage = () => {
     }
   };
 
-  const getStatusColor = (status) => {
+  const getStatusStyle = (status) => {
     switch (status) {
-      case 'New': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'Contacted': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'Qualified': return 'bg-indigo-100 text-indigo-800 border-indigo-200';
-      case 'Proposal Sent': return 'bg-purple-100 text-purple-800 border-purple-200';
-      case 'Won': return 'bg-green-100 text-green-800 border-green-200';
-      case 'Lost': return 'bg-red-100 text-red-800 border-red-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'New': return 'bg-indigo-50 text-indigo-700 border-indigo-100 ring-indigo-500/10';
+      case 'Contacted': return 'bg-amber-50 text-amber-700 border-amber-100 ring-amber-500/10';
+      case 'Qualified': return 'bg-emerald-50 text-emerald-700 border-emerald-100 ring-emerald-500/10';
+      case 'Proposal Sent': return 'bg-violet-50 text-violet-700 border-violet-100 ring-violet-500/10';
+      case 'Won': return 'bg-blue-50 text-blue-700 border-blue-100 ring-blue-500/10';
+      case 'Lost': return 'bg-rose-50 text-rose-700 border-rose-100 ring-rose-500/10';
+      default: return 'bg-slate-50 text-slate-700 border-slate-100 ring-slate-500/10';
     }
   };
 
-  if (loading) return <div className="flex justify-center p-10"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div></div>;
+  if (loading) return (
+    <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
+      <div className="w-12 h-12 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
+      <p className="text-slate-500 font-medium animate-pulse">Loading lead intelligence...</p>
+    </div>
+  );
 
   if (error) {
     return (
-      <div className="p-6 max-w-7xl mx-auto">
-        <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6 border border-red-100">{error}</div>
-        <button onClick={() => router.push('/dashboard/leads')} className="text-blue-600 hover:underline">Back to Leads</button>
+      <div className="max-w-2xl mx-auto mt-12 text-center space-y-6">
+        <div className="bg-rose-50 border border-rose-100 p-8 rounded-3xl">
+          <div className="w-16 h-16 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Info size={32} />
+          </div>
+          <h2 className="text-2xl font-bold text-slate-900">Oops! Something went wrong</h2>
+          <p className="text-rose-600 mt-2 font-medium">{error}</p>
+        </div>
+        <button 
+          onClick={() => router.push('/dashboard/leads')} 
+          className="inline-flex items-center gap-2 text-indigo-600 font-bold hover:gap-3 transition-all"
+        >
+          <ArrowLeft size={20} />
+          Return to Leads List
+        </button>
       </div>
     );
   }
@@ -68,119 +86,147 @@ const LeadDetailsPage = () => {
   if (!lead) return null;
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
+    <div className="space-y-8 animate-in">
+      {/* Navigation & Actions */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
-          <button onClick={() => router.push('/dashboard/leads')} className="text-gray-500 hover:text-gray-700 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
+          <button 
+            onClick={() => router.push('/dashboard/leads')} 
+            className="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-sm"
+          >
+            <ArrowLeft size={20} />
           </button>
-          <h1 className="text-3xl font-bold text-gray-900">Lead Details</h1>
+          <div>
+            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">{lead.name}</h1>
+            <div className="flex items-center gap-2 mt-1">
+              <span className={`text-xs font-bold px-3 py-1 rounded-full border ring-1 ${getStatusStyle(lead.status)}`}>
+                {lead.status}
+              </span>
+              <span className="text-slate-300">•</span>
+              <span className="text-sm text-slate-500 font-medium">{lead.company || 'Individual Client'}</span>
+            </div>
+          </div>
         </div>
+
         <div className="flex gap-3">
           <Link
             href={`/dashboard/leads/${id}/edit`}
-            className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors"
+            className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl font-bold transition-all shadow-sm active:scale-95"
           >
+            <Edit2 size={18} />
             Edit
           </Link>
           <button
             onClick={deleteLead}
-            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+            className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-xl font-bold transition-all active:scale-95 border border-rose-100"
           >
+            <Trash2 size={18} />
             Delete
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2 space-y-6">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="px-6 py-5 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Basic Information</h3>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Main Content */}
+        <div className="lg:col-span-8 space-y-8">
+          {/* Info Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm space-y-4">
+              <div className="flex items-center gap-3 text-slate-900 font-bold">
+                <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
+                  <Mail size={18} />
+                </div>
+                Contact Email
+              </div>
+              <p className="text-lg font-medium text-slate-700 break-all select-all">{lead.email}</p>
             </div>
-            <div className="p-6">
-              <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6">
-                <div>
-                  <dt className="text-sm font-medium text-gray-500">Full Name</dt>
-                  <dd className="mt-1 text-base text-gray-900">{lead.name}</dd>
+
+            <div className="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm space-y-4">
+              <div className="flex items-center gap-3 text-slate-900 font-bold">
+                <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
+                  <Phone size={18} />
                 </div>
-                <div>
-                  <dt className="text-sm font-medium text-gray-500">Email Address</dt>
-                  <dd className="mt-1 text-base text-gray-900">
-                    <a href={`mailto:${lead.email}`} className="text-blue-600 hover:underline">{lead.email}</a>
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-sm font-medium text-gray-500">Phone Number</dt>
-                  <dd className="mt-1 text-base text-gray-900">
-                    {lead.phone ? <a href={`tel:${lead.phone}`} className="text-blue-600 hover:underline">{lead.phone}</a> : '-'}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-sm font-medium text-gray-500">Company</dt>
-                  <dd className="mt-1 text-base text-gray-900">{lead.company || '-'}</dd>
-                </div>
-              </dl>
+                Phone Number
+              </div>
+              <p className="text-lg font-medium text-slate-700">{lead.phone || 'Not provided'}</p>
             </div>
+          </div>
+
+          {/* Lead Activity / Notes Section */}
+          <div className="bg-white rounded-3xl border border-slate-200/60 shadow-sm overflow-hidden">
+            <LeadNotes leadId={id} />
           </div>
         </div>
 
-        <div className="space-y-6">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="px-6 py-5 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Status & Source</h3>
+        {/* Sidebar / Metadata */}
+        <div className="lg:col-span-4 space-y-6">
+          <div className="bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden">
+            <div className="px-6 py-5 border-b border-slate-100 bg-slate-50/50">
+              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                <TrendingUp size={16} className="text-indigo-600" />
+                Pipeline Status
+              </h3>
             </div>
-            <div className="p-6 space-y-4">
-              <div>
-                <dt className="text-sm font-medium text-gray-500 mb-1">Current Status</dt>
-                <dd className="mt-1">
-                  <select
-                    value={lead.status}
-                    onChange={async (e) => {
-                      const newStatus = e.target.value;
-                      try {
-                        await updateLead(id, { status: newStatus });
-                        setLead({ ...lead, status: newStatus });
-                      } catch (err) {
-                        alert('Failed to update status');
-                      }
-                    }}
-                    className={`text-sm font-semibold rounded-full px-3 py-1 border outline-none cursor-pointer appearance-none ${getStatusColor(lead.status)}`}
-                  >
-                    <option value="New">New</option>
-                    <option value="Contacted">Contacted</option>
-                    <option value="Qualified">Qualified</option>
-                    <option value="Proposal Sent">Proposal Sent</option>
-                    <option value="Won">Won</option>
-                    <option value="Lost">Lost</option>
-                  </select>
-                </dd>
+            <div className="p-6 space-y-6">
+              <div className="space-y-3">
+                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Update Progress</label>
+                <select
+                  value={lead.status}
+                  onChange={async (e) => {
+                    const newStatus = e.target.value;
+                    try {
+                      await updateLead(id, { status: newStatus });
+                      setLead({ ...lead, status: newStatus });
+                    } catch (err) {
+                      alert('Failed to update status');
+                    }
+                  }}
+                  className={`w-full text-sm font-bold rounded-xl px-4 py-3 border outline-none cursor-pointer appearance-none transition-all ${getStatusStyle(lead.status)}`}
+                >
+                  <option value="New">New Lead</option>
+                  <option value="Contacted">Contacted</option>
+                  <option value="Qualified">Qualified</option>
+                  <option value="Proposal Sent">Proposal Sent</option>
+                  <option value="Won">Deal Won</option>
+                  <option value="Lost">Deal Lost</option>
+                </select>
               </div>
-              <hr className="border-gray-100" />
-              <div>
-                <dt className="text-sm font-medium text-gray-500 mb-1">Lead Source</dt>
-                <dd className="text-base text-gray-900">{lead.source}</dd>
-              </div>
-              <hr className="border-gray-100" />
-              <div>
-                <dt className="text-sm font-medium text-gray-500 mb-1">Created At</dt>
-                <dd className="text-sm text-gray-900">{new Date(lead.createdAt).toLocaleDateString()} {new Date(lead.createdAt).toLocaleTimeString()}</dd>
-              </div>
-              {lead.owner && (
-                <>
-                  <hr className="border-gray-100" />
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500 mb-1">Owner</dt>
-                    <dd className="text-sm text-gray-900">{lead.owner.name} ({lead.owner.email})</dd>
+
+              <div className="space-y-4 pt-4 border-t border-slate-100">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-slate-500 font-medium flex items-center gap-2">
+                    <Building2 size={16} /> Source
+                  </span>
+                  <span className="font-bold text-slate-900">{lead.source}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-slate-500 font-medium flex items-center gap-2">
+                    <Calendar size={16} /> Created
+                  </span>
+                  <span className="font-bold text-slate-900">{new Date(lead.createdAt).toLocaleDateString()}</span>
+                </div>
+                {lead.owner && (
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-slate-500 font-medium flex items-center gap-2">
+                      <User size={16} /> Assignee
+                    </span>
+                    <div className="text-right">
+                      <p className="font-bold text-slate-900">{lead.owner.name}</p>
+                      <p className="text-[10px] text-slate-400 uppercase font-bold">{lead.owner.email}</p>
+                    </div>
                   </div>
-                </>
-              )}
+                )}
+              </div>
             </div>
           </div>
-
-          <LeadNotes leadId={id} />
+          
+          {/* Quick Stats or Tips Card */}
+          <div className="bg-indigo-600 rounded-2xl p-6 text-white shadow-lg shadow-indigo-200">
+            <h4 className="font-bold text-lg mb-2">Sales Tip</h4>
+            <p className="text-indigo-100 text-sm leading-relaxed">
+              Leads contacted within 24 hours are 7x more likely to convert. Make sure to log all communications in the notes section below!
+            </p>
+          </div>
         </div>
       </div>
     </div>
