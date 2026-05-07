@@ -127,7 +127,7 @@ const LeadForm = ({ leadId = null, initialData = null }) => {
                   value={formData.phone}
                   onChange={handleChange}
                   className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all text-slate-700 font-medium placeholder:text-slate-300"
-                  placeholder="+1 (555) 000-0000"
+                  placeholder="+94 1234 567"
                 />
               </div>
               <div className="space-y-2">

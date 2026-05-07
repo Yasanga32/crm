@@ -34,7 +34,7 @@ export const getLeads = async (req, res) => {
       ];
     }
 
-    const leads = await Lead.find(query).populate('owner', 'name email');
+    const leads = await Lead.find(query).populate('owner', 'name email').sort({ createdAt: -1 });
     res.json(leads);
   } catch (error) {
     res.status(500).json({ message: error.message });
