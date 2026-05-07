@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getLeadById, deleteLead as removeLead, updateLead } from '@/api/leads';
 import LeadNotes from '@/components/LeadNotes';
-import { ArrowLeft, Edit2, Trash2, Mail, Phone, Building2, Calendar, User, Info, TrendingUp, DollarSign } from 'lucide-react';
+import { ArrowLeft, Edit2, Trash2, Mail, Phone, Building2, Calendar, User, Info, TrendingUp, DollarSign, Clock } from 'lucide-react';
 
 const LeadDetailsPage = () => {
   const params = useParams();
@@ -212,6 +212,12 @@ const LeadDetailsPage = () => {
                     <Calendar size={16} /> Created
                   </span>
                   <span className="font-bold text-slate-900">{new Date(lead.createdAt).toLocaleDateString()}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-slate-500 font-medium flex items-center gap-2">
+                    <Clock size={16} /> Last Updated
+                  </span>
+                  <span className="font-bold text-slate-900">{new Date(lead.updatedAt).toLocaleDateString()}</span>
                 </div>
                 {lead.owner && (
                   <div className="flex items-center justify-between text-sm">
