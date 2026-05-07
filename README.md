@@ -1,6 +1,6 @@
 # LeadFlow CRM
 
-A modern, high-performance CRM system built with Next.js and Node.js. Track leads, manage sales pipelines, and monitor team performance with a premium, glassmorphic interface.
+A modern, high-performance CRM system built with Next.js and Node.js. Track leads, manage sales pipelines, and monitor team performance with a clean, professional interface.
 
 ## 🚀 Features
 
@@ -8,7 +8,7 @@ A modern, high-performance CRM system built with Next.js and Node.js. Track lead
 - **Lead Intelligence**: Comprehensive lead management with status tracking and source analysis.
 - **Pipeline Management**: Visual status updates for every stage of the sales funnel.
 - **Nurture Notes**: Collaborative note-taking system for customer interactions.
-- **Premium UI**: Dark-mode inspired aesthetics with smooth animations and responsive design.
+- **Professional UI**: Clean, light-themed aesthetic with a focus on readability and efficiency.
 
 ## 📸 Preview
 
